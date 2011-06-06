@@ -11,7 +11,9 @@ EFI_CRT_OBJS 	= $(EFI_PATH)/crt0-efi-$(ARCH).o
 EFI_LDS		= $(EFI_PATH)/elf_$(ARCH)_efi.lds
 
 
-CFLAGS		= -O2 -fno-stack-protector -fno-strict-aliasing -fpic -fshort-wchar -Wall -Werror $(EFI_INCLUDES)
+CFLAGS		= -O2 -fno-stack-protector -fno-strict-aliasing -fpic -fshort-wchar \
+		  -Wall -Werror \
+		  $(EFI_INCLUDES)
 ifeq ($(ARCH),x86_64)
 	CFLAGS	+= -DEFI_FUNCTION_WRAPPER
 endif
@@ -24,15 +26,13 @@ all: $(TARGET)
 
 helloworld.efi: $(OBJS)
 
-%.efi: %.so 
+%.efi: %.o 
+	$(LD) $(LDFLAGS) $^ -o $@ $(EFI_LIBS)
 	objcopy -j .text -j .sdata -j .data \
 		-j .dynamic -j .dynsym  -j .rel \
 		-j .rela -j .reloc \
-		--target=efi-app-$(ARCH) $*.so $@
+		--target=efi-app-$(ARCH) $@
 	strip $@
-
-%.so: %.o
-	$(LD) $(LDFLAGS) $^ -o $@ $(EFI_LIBS)
 
 clean:
 	rm -f $(TARGET) $(OBJS)
