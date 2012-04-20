@@ -8,7 +8,7 @@ LIB_GCC		= $(shell $(CC) -print-libgcc-file-name)
 EFI_LIBS	= -lefi -lgnuefi $(LIB_GCC)
 
 EFI_CRT_OBJS 	= $(EFI_PATH)/crt0-efi-$(ARCH).o
-EFI_LDS		= $(EFI_PATH)/elf_$(ARCH)_efi.lds
+EFI_LDS		= ./elf_$(ARCH)_efi.lds
 
 
 CFLAGS		= -O2 -fno-stack-protector -fno-strict-aliasing -fpic -fshort-wchar \
